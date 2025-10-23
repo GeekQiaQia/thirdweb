@@ -6,6 +6,8 @@ node_modules/
 /build/
 /out/
 /coverage/
+/cache/
+/artifacts/
 
 # Vite / Next / tooling caches
 /.vite/
