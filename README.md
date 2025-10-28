@@ -10,6 +10,10 @@ third web starter
 - react-native-app — React Native sample (Expo/EAS)
 - NFT-Tutorial — Tutorial project with contracts and scripts
 
+### Preview 
+foundry-app: https://thirdweb-virid-six.vercel.app/
+
+
 ## Quick Start (Unified)
 
 ### Prerequisites
