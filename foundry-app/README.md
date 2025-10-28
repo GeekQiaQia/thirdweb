@@ -166,5 +166,6 @@ Etherscan 链接：
 - CryptoDevsDAO: https://sepolia.etherscan.io/address/0xec01b978378846650b0c9c1db5fd39e21ab0ddd3
 
 ### Preview
-
+### Preview
+[https://thirdweb-virid-six.vercel.app](https://thirdweb-virid-six.vercel.app/)
 ![CryptoDevs Banner](./assets/3efcfb03-0524-4256-9773-f63dd46f7b10.png)
