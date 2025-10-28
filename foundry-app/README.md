@@ -134,3 +134,37 @@ forge create --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --broad
 - Keep PRIVATE_KEY and any secrets out of version control.
 - If local Anvil RPC encounters proxy/network restrictions, prefer deploying to Sepolia via a trusted RPC.
 
+
+
+https://learnweb3.io/courses/sophomore/build-an-nft-powered-fully-on-chain-dao-to-invest-in-nft-collections-as-a-group/
+
+```
+forge create --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --broadcast --verify --etherscan-api-key "$ETHERSCAN_API_KEY" src/CryptoDevsNFT.sol:CryptoDevsNFT 
+```
+```
+forge create --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --etherscan-api-key "$ETHERSCAN_API_KEY" --verify --broadcast src/FakeNFTMarketplace.sol:FakeNFTMarketplace
+```
+
+https://sepolia.etherscan.io/address/0x4270f449f91d0f194c2491e77ce5f93f1a96e617
+
+
+```
+forge create --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --broadcast src/CryptoDevsDAO.sol:CryptoDevsDAO --constructor-args 0x4270F449f91d0f194c2491e77cE5f93F1A96E617 0xD83966Be9876C05583E8955d0aa248dc2f0a184f 
+```
+
+## Deploy details（Sepolia）
+
+- Deployer: 0xD95442c30E1dfB7f4b1c519629200A6f2A40546E
+- CryptoDevsNFT 地址: 0xD83966Be9876C05583E8955d0aa248dc2f0a184f
+- FakeNFTMarketplace 地址: 0x4270F449f91d0f194c2491e77cE5f93F1A96E617
+- CryptoDevsDAO 地址: 0xeC01b978378846650b0c9C1DB5fd39e21AB0DdD3
+- CryptoDevsDAO 交易哈希: 0x8bc5ae1c67e6239437ac804d8763bd358fe0345230c26f880954e1a189544f4a
+
+Etherscan 链接：
+- FakeNFTMarketplace: https://sepolia.etherscan.io/address/0x4270f449f91d0f194c2491e77ce5f93f1a96e617
+- CryptoDevsNFT: https://sepolia.etherscan.io/address/0xd83966be9876c05583e8955d0aa248dc2f0a184f
+- CryptoDevsDAO: https://sepolia.etherscan.io/address/0xec01b978378846650b0c9c1db5fd39e21ab0ddd3
+
+### Preview
+
+![CryptoDevs Banner](./assets/3efcfb03-0524-4256-9773-f63dd46f7b10.png)
