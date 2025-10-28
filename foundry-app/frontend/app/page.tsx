@@ -320,7 +320,7 @@ export default function Home() {
           <div className={styles.hero}>
             <h1 className={styles.title}>CryptoDevs DAO</h1>
             <div className={styles.description}>
-              去中心化提案、投票与金库管理。连接钱包，参与治理，共建社区。
+              Decentralized proposals, voting, and treasury management. Connect your wallet to participate in governance and help build the community.
             </div>
             <div className={styles.badges}>
               <span>On-chain Proposals</span>
