@@ -308,8 +308,40 @@ export default function Home() {
 
   if (!isConnected)
     return (
-      <div>
-        <ConnectButton />
+      <div className={inter.className}>
+        <div className={`${styles.main} ${styles.landing}`}>
+          {/* 背景装饰层：渐变与网格 */}
+          <div className={styles.bgDecor} aria-hidden="true">
+            <div className={styles.gridOverlay} />
+            <div className={styles.glowA} />
+            <div className={styles.glowB} />
+          </div>
+
+          <div className={styles.hero}>
+            <h1 className={styles.title}>CryptoDevs DAO</h1>
+            <div className={styles.description}>
+              去中心化提案、投票与金库管理。连接钱包，参与治理，共建社区。
+            </div>
+            <div className={styles.badges}>
+              <span>On-chain Proposals</span>
+              <span>Token Voting</span>
+              <span>Treasury</span>
+            </div>
+            <div className={styles.flex}>
+              <ConnectButton />
+            </div>
+          </div>
+          <div>
+            <Image
+              className={styles.image}
+              src="/cryptodevs-banner.svg"
+              alt="CryptoDevs DAO banner"
+              width={600}
+              height={600}
+              priority
+            />
+          </div>
+        </div>
       </div>
     );
 

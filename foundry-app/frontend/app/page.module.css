@@ -448,3 +448,76 @@
   color: #ffffff !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
+
+/* ====== Landing (未连接状态) 背景与装饰 ====== */
+.landing {
+  position: relative;
+  overflow: hidden;
+}
+
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.22;
+}
+
+.glowA,
+.glowB {
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  animation: gradientShift 18s ease-in-out infinite alternate;
+}
+
+.glowA {
+  top: -20vh;
+  left: -10vw;
+  background: radial-gradient(circle, rgba(124, 77, 255, 0.35), transparent 60%);
+}
+
+.glowB {
+  bottom: -15vh;
+  right: -10vw;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.28), transparent 60%);
+}
+
+@keyframes gradientShift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2vw, -1vh, 0) scale(1.05); }
+  100% { transform: translate3d(-2vw, 1vh, 0) scale(1.02); }
+}
+
+/* 徽章：突出 DAO 特征 */
+.badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.25rem 0 1rem 0;
+}
+
+.badges span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+}
