@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   CryptoDevsDAOABI,
@@ -9,12 +9,18 @@ import {
 import { config } from "./provider";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 // Removed next/head to satisfy Next.js core-web-vitals lint rules in app router
+import { createPublicClient, http } from "viem";
 
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { formatEther } from "viem/utils";
-import { useAccount, useBalance, useContractRead } from "wagmi";
-import { readContract, waitForTransactionReceipt, writeContract } from "wagmi/actions";
+import { mainnet } from "viem/chains";
+import { useAccount, useBalance, useEnsName, useContractRead } from "wagmi";
+import {
+  readContract,
+  waitForTransactionReceipt,
+  writeContract,
+} from "wagmi/actions";
 import styles from "./page.module.css";
 import { Inter } from "next/font/google";
 
@@ -39,7 +45,6 @@ export default function Home() {
 
   // State variable to know if the component has been mounted yet or not
 
-
   // State variable to show loading state when waiting for a transaction to go through
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +54,44 @@ export default function Home() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   // State variable to switch between the 'Create Proposal' and 'View Proposals' tabs
   const [selectedTab, setSelectedTab] = useState<string>("");
+
+  // State variable to store the ENS name of the user
+  const [ensName, setEnsName] = useState<string | null>(null);
+  const [ensAvatar, setEnsAvatar] = useState<string | null>(null);
+
+  // Normalize ENS avatar URLs (e.g., ipfs:// -> https gateway)
+  function normalizeAvatarUrl(u: string | null): string | null {
+    if (!u) return null;
+    if (u.startsWith("ipfs://")) {
+      const cidPath = u.slice("ipfs://".length);
+      return `https://ipfs.io/ipfs/${cidPath}`;
+    }
+    return u;
+  }
+
+  useEffect(() => {
+    if (!address) return;
+    const client = createPublicClient({
+      chain: mainnet,
+      transport: http(), // 默认可用 Infura/Alchemy 端点
+    });
+
+    (async () => {
+      try {
+        const name = await client.getEnsName({ address });
+        setEnsName(name ?? null);
+
+        if (name) {
+          const avatar = await client.getEnsAvatar({ name });
+          const normalized = normalizeAvatarUrl(avatar ?? null);
+          setEnsAvatar(normalized);
+          console.log("ENS Avatar URL:", normalized);
+        }
+      } catch (e) {
+        console.error("ENS lookup failed:", e);
+      }
+    })();
+  }, [address]);
 
   // Fetch the owner of the DAO
   const daoOwner = useContractRead({
@@ -103,14 +146,15 @@ export default function Home() {
   // Function to fetch a proposal by it's ID
   async function fetchProposalById(id: number): Promise<Proposal | null> {
     try {
-      const proposalTuple = await readContract(config, {
+      const proposalTuple = (await readContract(config, {
         address: CryptoDevsDAOAddress,
         abi: CryptoDevsDAOABI,
         functionName: "proposals",
         args: [BigInt(id)],
-      }) as [bigint, bigint, bigint, bigint, boolean];
+      })) as [bigint, bigint, bigint, bigint, boolean];
 
-      const [nftTokenId, deadline, yayVotes, nayVotes, executed] = proposalTuple;
+      const [nftTokenId, deadline, yayVotes, nayVotes, executed] =
+        proposalTuple;
 
       const parsedProposal: Proposal = {
         proposalId: id,
@@ -224,7 +268,8 @@ export default function Home() {
         </div>
       );
     } else if (
-      typeof nftBalanceOfUser.data === "bigint" && nftBalanceOfUser.data === BigInt(0)
+      typeof nftBalanceOfUser.data === "bigint" &&
+      nftBalanceOfUser.data === BigInt(0)
     ) {
       return (
         <div className={styles.description}>
@@ -293,7 +338,10 @@ export default function Home() {
                     className={styles.button2}
                     onClick={() => executeProposal(p.proposalId)}
                   >
-                    Execute Proposal {BigInt(p.yayVotes) > BigInt(p.nayVotes) ? "(YAY)" : "(NAY)"}
+                    Execute Proposal{" "}
+                    {BigInt(p.yayVotes) > BigInt(p.nayVotes)
+                      ? "(YAY)"
+                      : "(NAY)"}
                   </button>
                 </div>
               ) : (
@@ -320,7 +368,9 @@ export default function Home() {
           <div className={styles.hero}>
             <h1 className={styles.title}>CryptoDevs DAO</h1>
             <div className={styles.description}>
-              Decentralized proposals, voting, and treasury management. Connect your wallet to participate in governance and help build the community.
+              Decentralized proposals, voting, and treasury management. Connect
+              your wallet to participate in governance and help build the
+              community.
             </div>
             <div className={styles.badges}>
               <span>On-chain Proposals</span>
@@ -347,58 +397,77 @@ export default function Home() {
 
   return (
     <div className={inter.className}>
-      {/* Removed <Head> to comply with app router best practices; use layout.tsx metadata instead */}
-      {/* <Head>
-        <title>CryptoDevs DAO</title>
-        <meta name="description" content="CryptoDevs DAO" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head> */}
-
       <div className={styles.main}>
         <div className={styles.hero}>
-           <h1 className={styles.title}>Welcome to Crypto Devs!</h1>
-           <div className={styles.description}>Welcome to the DAO!</div>
-           <div className={styles.description}>
-             Your CryptoDevs NFT Balance: {nftBalanceOfUser.data?.toString() ?? "0"}
-             <br />
-             {daoBalance.data && (
-               <>
-                 Treasury Balance: {formatEther(daoBalance.data.value).toString()} ETH
-               </>
-             )}
-             <br />
-             Total Number of Proposals: {numOfProposalsInDAO.data?.toString() ?? "0"}
-           </div>
-           <div className={styles.flex}>
-             <button
-               className={styles.button}
-               onClick={() => setSelectedTab("Create Proposal")}
-             >
-               Create Proposal
-             </button>
-             <button
-               className={styles.button}
-               onClick={() => { setSelectedTab("View Proposals"); fetchAllProposals(); }}
-             >
-               View Proposals
-             </button>
-           </div>
-           {renderTabs()}
-           {/* Display additional withdraw button if connected wallet is owner */}
-           {address && typeof daoOwner.data === "string" && address.toLowerCase() === daoOwner.data.toLowerCase() ? (
-             <div>
-               {loading ? (
-                 <button className={styles.button}>Loading...</button>
-               ) : (
-                 <button className={styles.button} onClick={withdrawDAOEther}>
-                   Withdraw DAO ETH
-                 </button>
-               )}
-             </div>
-           ) : (
-             ""
-           )}
-         </div>
+          <h1 className={styles.title}>Welcome to Crypto Devs!</h1>
+          {ensAvatar && (
+            <Image
+              width={80}
+              height={80}
+              src={ensAvatar}
+              alt="ENS Avatar"
+              unoptimized
+              referrerPolicy="no-referrer"
+              onError={() => setEnsAvatar("/globe.svg")}
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                marginTop: 10,
+                objectFit: "cover",
+              }}
+            />
+          )}
+          <div className={styles.description}>Welcome to the DAO!</div>
+          <div className={styles.description}>
+            Your CryptoDevs NFT Balance:{" "}
+            {nftBalanceOfUser.data?.toString() ?? "0"}
+            <br />
+            {daoBalance.data && (
+              <>
+                Treasury Balance:{" "}
+                {formatEther(daoBalance.data.value).toString()} ETH
+              </>
+            )}
+            <br />
+            Total Number of Proposals:{" "}
+            {numOfProposalsInDAO.data?.toString() ?? "0"}
+          </div>
+          <div className={styles.flex}>
+            <button
+              className={styles.button}
+              onClick={() => setSelectedTab("Create Proposal")}
+            >
+              Create Proposal
+            </button>
+            <button
+              className={styles.button}
+              onClick={() => {
+                setSelectedTab("View Proposals");
+                fetchAllProposals();
+              }}
+            >
+              View Proposals
+            </button>
+          </div>
+          {renderTabs()}
+          {/* Display additional withdraw button if connected wallet is owner */}
+          {address &&
+          typeof daoOwner.data === "string" &&
+          address.toLowerCase() === daoOwner.data.toLowerCase() ? (
+            <div>
+              {loading ? (
+                <button className={styles.button}>Loading...</button>
+              ) : (
+                <button className={styles.button} onClick={withdrawDAOEther}>
+                  Withdraw DAO ETH
+                </button>
+              )}
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
         <div>
           <Image
             className={styles.image}

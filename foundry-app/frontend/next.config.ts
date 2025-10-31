@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
     // Explicitly declare Turbopack config to silence Next.js 16 warning
     turbopack: {},
     images: {
+       domains: [
+      "euc.li",          // ENS avatar example
+      "metadata.ens.domains", // 另一些 ENS 头像会用这个
+      "ipfs.io",         // 有的头像托管在 ipfs.io
+      "gateway.pinata.cloud",
+      "arweave.net"
+    ],
       remotePatterns: [
         {
           protocol: "https",
