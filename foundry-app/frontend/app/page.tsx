@@ -6,16 +6,19 @@ import {
   CryptoDevsNFTABI,
   CryptoDevsNFTAddress,
 } from "@/constant";
+import { LW3PunksABI, LW3PunksAddress } from "@/constant";
 import { config } from "./provider";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 // Removed next/head to satisfy Next.js core-web-vitals lint rules in app router
 import { createPublicClient, http } from "viem";
+import { parseEther } from "viem";
 
 import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
 import { formatEther } from "viem/utils";
 import { mainnet } from "viem/chains";
-import { useAccount, useBalance, useEnsName, useContractRead } from "wagmi";
+import { useAccount, useBalance, useContractRead } from "wagmi";
+import { useReadContract, useWriteContract } from "wagmi";
 import {
   readContract,
   waitForTransactionReceipt,
@@ -54,6 +57,8 @@ export default function Home() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   // State variable to switch between the 'Create Proposal' and 'View Proposals' tabs
   const [selectedTab, setSelectedTab] = useState<string>("");
+  // Loading state for LW3Punks mint
+  const [isMinting, setIsMinting] = useState(false);
 
   // State variable to store the ENS name of the user
   const [ensName, setEnsName] = useState<string | null>(null);
@@ -121,6 +126,34 @@ export default function Home() {
     // Only query when address is available to avoid errors
     query: { enabled: Boolean(address) },
   });
+
+  // LW3Punks: read minted count
+  const mintedCountData = useReadContract({
+    abi: LW3PunksABI,
+    address: LW3PunksAddress,
+    functionName: "tokenIds",
+  });
+  const mintedCount = typeof mintedCountData.data === "bigint" ? Number(mintedCountData.data) : 0;
+
+  // LW3Punks: write helper for mint
+  const { writeContractAsync } = useWriteContract();
+
+  async function mintLW3Punk() {
+    setIsMinting(true);
+    try {
+      await writeContractAsync({
+        abi: LW3PunksABI,
+        address: LW3PunksAddress,
+        functionName: "mint",
+        value: parseEther("0.01"),
+      });
+      window.alert("Successfully minted!");
+    } catch (error) {
+      console.error(error);
+      window.alert("Could not mint NFT :(");
+    }
+    setIsMinting(false);
+  }
 
   // Function to make a createProposal transaction in the DAO
   async function createProposal() {
@@ -467,6 +500,25 @@ export default function Home() {
           ) : (
             ""
           )}
+
+          {/* LW3Punks mint section */}
+          <div className={styles.card} style={{ marginTop: 24 }}>
+            <h2 className={styles.title}>LW3Punks Mint</h2>
+            <div className={styles.description}>{mintedCount}/10 have been minted</div>
+            <div className={styles.flex}>
+              {isConnected ? (
+                <button
+                  className={styles.button}
+                  disabled={isMinting || mintedCount >= 10}
+                  onClick={mintLW3Punk}
+                >
+                  {isMinting ? "Loading..." : mintedCount >= 10 ? "Sold Out" : "Mint for 0.01 ETH"}
+                </button>
+              ) : (
+                <ConnectButton />
+              )}
+            </div>
+          </div>
         </div>
         <div>
           <Image

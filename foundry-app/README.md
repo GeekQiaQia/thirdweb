@@ -70,6 +70,35 @@ demo from :https://learnweb3.io/courses/sophomore/build-an-nft-collection-with-a
 
 source .env
 
+### Switch to Ankr RPC
+
+The URL `https://www.ankr.com/rpc/home/` is a landing page, not an RPC endpoint. Use the network-specific Ankr RPC URL. For Sepolia, the endpoint is:
+
+```
+https://rpc.ankr.com/eth_sepolia
+```
+
+Update your `.env` and reload:
+
+```bash
+# .env
+# QUICKNODE_RPC_URL=https://rpc.ankr.com/eth_sepolia
+source .env
+```
+
+Verify connectivity:
+
+```bash
+cast chain-id --rpc-url "$QUICKNODE_RPC_URL"   # should return 11155111
+cast block-number --rpc-url "$QUICKNODE_RPC_URL"
+```
+
+Or pass the URL directly in commands (no env needed):
+
+```bash
+forge create --rpc-url "https://rpc.ankr.com/eth_sepolia" --private-key "0x$PRIVATE_KEY" src/LW3Punks.sol:LW3Punks --constructor-args "ipfs://bafybeiclpfnhtzmy7icx4whsrzq6wkpdote6k6iabimi4xx62lmc3tu53e/" --chain-id 11155111 --broadcast --verify --etherscan-api-key "$ETHERSCAN_API_KEY"
+```
+
 forge create src/Whitelist.sol:Whitelist --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --constructor-args 10 --verify --etherscan-api-key "$ETHERSCAN_API_KEY"
 
 forge create --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --broadcast --verify --etherscan-api-key "$ETHERSCAN_API_KEY" src/CryptoDevs.sol:CryptoDevs --constructor-args 0xD1Bf5C82aFCB93A6B8a347b44D0CCe730132e541
@@ -152,20 +181,106 @@ https://sepolia.etherscan.io/address/0x4270f449f91d0f194c2491e77ce5f93f1a96e617
 forge create --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --broadcast src/CryptoDevsDAO.sol:CryptoDevsDAO --constructor-args 0x4270F449f91d0f194c2491e77cE5f93F1A96E617 0xD83966Be9876C05583E8955d0aa248dc2f0a184f 
 ```
 
-## Deploy details（Sepolia）
+## Deploy Details (Sepolia)
 
 - Deployer: 0xD95442c30E1dfB7f4b1c519629200A6f2A40546E
-- CryptoDevsNFT 地址: 0xD83966Be9876C05583E8955d0aa248dc2f0a184f
-- FakeNFTMarketplace 地址: 0x4270F449f91d0f194c2491e77cE5f93F1A96E617
-- CryptoDevsDAO 地址: 0xeC01b978378846650b0c9C1DB5fd39e21AB0DdD3
-- CryptoDevsDAO 交易哈希: 0x8bc5ae1c67e6239437ac804d8763bd358fe0345230c26f880954e1a189544f4a
+- CryptoDevsNFT Address: 0xD83966Be9876C05583E8955d0aa248dc2f0a184f
+- FakeNFTMarketplace Address: 0x4270F449f91d0f194c2491e77cE5f93F1A96E617
+- CryptoDevsDAO Address: 0xeC01b978378846650b0c9C1DB5fd39e21AB0DdD3
+- CryptoDevsDAO Transaction Hash: 0x8bc5ae1c67e6239437ac804d8763bd358fe0345230c26f880954e1a189544f4a
 
-Etherscan 链接：
+Etherscan Links:
 - FakeNFTMarketplace: https://sepolia.etherscan.io/address/0x4270f449f91d0f194c2491e77ce5f93f1a96e617
 - CryptoDevsNFT: https://sepolia.etherscan.io/address/0xd83966be9876c05583e8955d0aa248dc2f0a184f
 - CryptoDevsDAO: https://sepolia.etherscan.io/address/0xec01b978378846650b0c9c1db5fd39e21ab0ddd3
 
-### Preview
+
 ### Preview
 [https://thirdweb-virid-six.vercel.app](https://thirdweb-virid-six.vercel.app/)
 ![CryptoDevs Banner](./assets/3efcfb03-0524-4256-9773-f63dd46f7b10.png)
+
+https://learnweb3.io/courses/sophomore/build-your-own-decentralized-exchange-like-uniswap-v1/
+
+For deploying your token contract, make sure your terminal points to foundry-app and run this:
+
+```
+forge create src/Token.sol:Token \
+  --rpc-url "$QUICKNODE_RPC_URL" \
+  --private-key "$PRIVATE_KEY" \
+  --verify \
+  --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  --broadcast
+```
+
+Notes:
+- Ensure `PRIVATE_KEY` in `.env` is prefixed with `0x`. If it is not, prefix when passing via CLI: `--private-key "0x$PRIVATE_KEY"`.
+- Newer Foundry versions support `--broadcast` with both `forge create` and `forge script`. If your create command doesn’t broadcast, prefer the script flow below.
+
+Now copy the obtained address since we’re gonna need it for our Exchange contract’s constructor. Run the following command
+
+```
+forge script script/DeployExchange.s.sol \
+  --rpc-url "$QUICKNODE_RPC_URL" \
+  --private-key "0x$PRIVATE_KEY" \
+  --broadcast \
+  --chain-id 11155111 -vv
+```
+
+Optional: Verify Exchange on Etherscan (Sepolia)
+```
+forge verify-contract \
+  --chain-id 11155111 \
+  --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  0x5393ffD3BFa13E7fE994Eba1d54080cA1F2D7AF8 \
+  src/Exchange.sol:Exchange \
+  --constructor-args 0x54D51BCE6d5afbDA565Ae9a15fBB5d0a52ED5E78 -vv
+```
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 11155111
+
+Estimated gas price: 0.001051327 gwei
+
+Estimated total gas used for script: 2299585
+
+Estimated amount required: 0.000002417615799295 ETH
+
+==========================
+
+##### sepolia
+✅  [Success] Hash: 0x3737c174b530d870dfd6be285031087e5ea6874d02338ce2aa6b375897d97be8
+Contract Address: 0x5393ffD3BFa13E7fE994Eba1d54080cA1F2D7AF8
+Block: 9515381
+Paid: 0.000001859685488192 ETH (1768912 gas * 0.001051316 gwei)
+
+✅ Sequence #1 on sepolia | Total Paid: 0.000001859685488192 ETH (1768912 gas * avg 0.001051316 gwei)
+                                                        
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+## verify-contract
+
+```
+forge verify-contract --chain-id 11155111 --etherscan-api-key "$ETHERSCAN_API_KEY" 0x5393ffD3BFa13E7fE994Eba1d54080cA1F2D7AF8 src/Exchange.sol:Exchange --constructor-args $(cast abi-encode "constructor(address)" 0x54D51BCE6d5afbDA565Ae9a15fBB5d0a52ED5E78) --watch -vv 
+
+```
+
+```
+forge verify-check --chain sepolia --etherscan-api-key "$ETHERSCAN_API_KEY" hpd6xg6fpsbqgd4p8lzvcxd1hvkvvfkjzjgxlrbrrgtf2sdqks -vv 
+```
+
+Now we'll have to load our environment variables into the terminal's environment.  For doing this, run the following command in your terminal
+```
+source .env
+```
+to deploy your contract, run the following command:
+
+```
+forge script script/DeployLW3Punks.s.sol:DeployLW3Punks --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --chain-id 11155111 --broadcast --verify --etherscan-api-key "$ETHERSCAN_API_KEY" -vvvv 
+
+```
