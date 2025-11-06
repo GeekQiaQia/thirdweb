@@ -284,3 +284,38 @@ to deploy your contract, run the following command:
 forge script script/DeployLW3Punks.s.sol:DeployLW3Punks --rpc-url "$QUICKNODE_RPC_URL" --private-key "$PRIVATE_KEY" --chain-id 11155111 --broadcast --verify --etherscan-api-key "$ETHERSCAN_API_KEY" -vvvv 
 
 ```
+
+https://learnweb3.io/courses/junior/secure-on-chain-randomness-using-chainlink-vrfs/
+
+
+
+deploy script:
+```
+FORGE_MAX_WORKERS=1 forge script script/DeployRandomWinnerGame.s.sol:DeployRandomWinnerGame --rpc-url $QUICKNODE_RPC_URL --private-key $PRIVATE_KEY --broadcast
+
+```
+##### sepolia
+
+✅  [Success] Hash: 0xa25fe38759e42c60f9d5aea57de2fc511066862f737eeedc81db6507d5d5f1f4
+Contract Address: 0x1Fbe03EAC39d40ED8457Ad30edF667584A99BF6a
+Block: 9566340
+Paid: 0.000001889283110715 ETH (1889285 gas * 0.000999999 gwei)
+
+✅ Sequence #1 on sepolia | Total Paid: 0.000001889283110715 ETH (1889285 gas * avg 0.000999999 gwei)
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL
+
+https://sepolia.etherscan.io/address/0x1Fbe03EAC39d40ED8457Ad30edF667584A99BF6a
+
+we need to verify and publish the contract
+Verify both Sepolia contracts with the exact deploy compiler:
+
+```
+FORGE_MAX_WORKERS=1 forge verify-contract --chain sepolia --compiler-version v0.8.20+commit.a1b79de6 --etherscan-api-key $ETHERSCAN_API_KEY 0x1Fbe03EAC39d40ED8457Ad30edF667584A99BF6a src/RandomWinnerGame.sol:RandomWinnerGame --watch
+```
+
+```
+FORGE_MAX_WORKERS=1 forge verify-contract --chain sepolia --compiler-version v0.8.20+commit.a1b79de6 --etherscan-api-key $ETHERSCAN_API_KEY 0x43688a0068D08f5f168b7289eea528EEe4891A3c src/RandomWinnerGame.sol:RandomWinnerGame --watch
+```
+
+now it's verified 
