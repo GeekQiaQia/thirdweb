@@ -8,9 +8,9 @@ dataSources:
     name: RandomWinnerGame
     network: sepolia
     source:
-      address: "0x43688a0068D08f5f168b7289eea528EEe4891A3c"
+      address: "0xf6823744b1cFc33500bD186468db33D37a5b1ECF"
       abi: RandomWinnerGame
-      startBlock: 0
+      startBlock: 9572212
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -20,6 +20,7 @@ dataSources:
         - GameStarted
         - OwnershipTransferred
         - PlayerJoined
+        - GameCancelled
       abis:
         - name: RandomWinnerGame
           file: ./abis/RandomWinnerGame.json
@@ -32,4 +33,6 @@ dataSources:
           handler: handleOwnershipTransferred
         - event: PlayerJoined(uint256,address)
           handler: handlePlayerJoined
+        - event: GameCancelled(uint256)
+          handler: handleGameCancelled
       file: ./src/random-winner-game.ts

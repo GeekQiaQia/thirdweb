@@ -35,3 +35,11 @@ type PlayerJoined @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type GameCancelled @entity(immutable: true) {
+  id: Bytes!
+  gameId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

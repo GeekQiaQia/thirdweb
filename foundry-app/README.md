@@ -314,8 +314,35 @@ Verify both Sepolia contracts with the exact deploy compiler:
 FORGE_MAX_WORKERS=1 forge verify-contract --chain sepolia --compiler-version v0.8.20+commit.a1b79de6 --etherscan-api-key $ETHERSCAN_API_KEY 0x1Fbe03EAC39d40ED8457Ad30edF667584A99BF6a src/RandomWinnerGame.sol:RandomWinnerGame --watch
 ```
 
+now it's verified 
+
+
+https://learnweb3.io/courses/junior/indexing-data-using-the-graphs-indexer/
+
+For the deploy key, go to your subgraph, copy the command given under  AUTHENTICATE IN CLI
+
 ```
-FORGE_MAX_WORKERS=1 forge verify-contract --chain sepolia --compiler-version v0.8.20+commit.a1b79de6 --etherscan-api-key $ETHERSCAN_API_KEY 0x43688a0068D08f5f168b7289eea528EEe4891A3c src/RandomWinnerGame.sol:RandomWinnerGame --watch
+graph auth https://api.studio.thegraph.com/deploy/<deploy key>
 ```
 
-now it's verified 
+```
+graph auth <deploy key> 
+
+yarn deploy
+
+```
+Subgraph endpoints:
+Queries (HTTP):     https://api.studio.thegraph.com/query/1714616/random-winner-game/v0.0.1
+
+
+
+studio page is:
+https://thegraph.com/studio/subgraph/random-winner-game
+
+query endpoint is :
+https://api.studio.thegraph.com/query/1714616/random-winner-game/v0.0.1
+
+how to repeat deploy after changing the mapping or schema :
+
+yarn codegen && yarn build
+yarn deploy

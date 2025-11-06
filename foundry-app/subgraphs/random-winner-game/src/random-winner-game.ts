@@ -2,13 +2,15 @@ import {
   GameEnded as GameEndedEvent,
   GameStarted as GameStartedEvent,
   OwnershipTransferred as OwnershipTransferredEvent,
-  PlayerJoined as PlayerJoinedEvent
+  PlayerJoined as PlayerJoinedEvent,
+  GameCancelled as GameCancelledEvent
 } from "../generated/RandomWinnerGame/RandomWinnerGame"
 import {
   GameEnded,
   GameStarted,
   OwnershipTransferred,
-  PlayerJoined
+  PlayerJoined,
+  GameCancelled
 } from "../generated/schema"
 
 export function handleGameEnded(event: GameEndedEvent): void {
@@ -63,6 +65,19 @@ export function handlePlayerJoined(event: PlayerJoinedEvent): void {
   )
   entity.gameId = event.params.gameId
   entity.player = event.params.player
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleGameCancelled(event: GameCancelledEvent): void {
+  let entity = new GameCancelled(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.gameId = event.params.gameId
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

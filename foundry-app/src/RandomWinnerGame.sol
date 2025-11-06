@@ -13,6 +13,8 @@ contract RandomWinnerGame is VRFV2PlusWrapperConsumerBase, ConfirmedOwner {
     event PlayerJoined(uint256 gameId, address player);
     // emitted when the game ends
     event GameEnded(uint256 gameId, address winner, uint256 requestId);
+    // emitted when the owner cancels an active game
+    event GameCancelled(uint256 gameId);
 
     //Chainlink variables
     // The amount of LINK to send with the request
@@ -91,6 +93,18 @@ contract RandomWinnerGame is VRFV2PlusWrapperConsumerBase, ConfirmedOwner {
         if (players.length == maxPlayers) {
             getRandomWinner();
         }
+    }
+
+    function cancelGame() external onlyOwner {
+        require(gameStarted, "No active game");
+        uint256 refund = entryFee;
+        for (uint256 i = 0; i < players.length; i++) {
+            (bool sent, ) = players[i].call{value: refund}("");
+            require(sent, "Refund failed");
+        }
+        gameStarted = false;
+        emit GameCancelled(gameId);
+        delete players;
     }
 
     //Receives random values and stores them with your contract.

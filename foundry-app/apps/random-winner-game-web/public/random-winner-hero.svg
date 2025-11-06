@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="420" height="420" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#162034"/>
+      <stop offset="60%" stop-color="#0b0f19" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0b0f19" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="neon" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#7C4DFF"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- background glow -->
+  <rect x="0" y="0" width="420" height="420" fill="url(#bgGrad)"/>
+
+  <!-- trophy base -->
+  <g filter="url(#glow)">
+    <path d="M160 300 h100 v22 c0 8 -6 14 -14 14 h-72 c-8 0 -14 -6 -14 -14z" fill="url(#neon)" opacity="0.9"/>
+    <rect x="180" y="322" width="60" height="16" rx="8" fill="#101727" stroke="#2A3856" stroke-width="2"/>
+  </g>
+
+  <!-- cup -->
+  <g filter="url(#glow)">
+    <path d="M150 140 h120 v40 c0 40 -30 74 -60 74 s-60 -34 -60 -74z" fill="url(#neon)"/>
+    <rect x="195" y="254" width="30" height="38" rx="6" fill="#0f1a2b" stroke="#5a43b8"/>
+    <!-- handles -->
+    <path d="M150 160 c-36 0 -52 18 -52 38 0 16 10 30 28 34" fill="none" stroke="#00E5FF" stroke-width="6" stroke-linecap="round"/>
+    <path d="M270 160 c36 0 52 18 52 38 0 16 -10 30 -28 34" fill="none" stroke="#7C4DFF" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- sparkles -->
+  <g opacity="0.9">
+    <circle cx="110" cy="110" r="3" fill="#00E5FF"/>
+    <circle cx="320" cy="120" r="3" fill="#7C4DFF"/>
+    <circle cx="340" cy="220" r="2" fill="#00E5FF"/>
+    <circle cx="90" cy="240" r="2" fill="#7C4DFF"/>
+    <circle cx="200" cy="90" r="2" fill="#00E5FF"/>
+  </g>
+
+  <!-- title badge -->
+  <rect x="146" y="96" width="128" height="28" rx="14" fill="#0f1a2b" stroke="#2A3856"/>
+  <text x="210" y="115" text-anchor="middle" font-size="12" fill="#9EC7FF" font-family="monospace">RANDOM WINNER</text>
+</svg>
